@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./Pages/Home";
+import Agence from "./Pages/Agence";
+import Project from "./Pages/Project";
+import Navbar from "./Components/Navigation/Navbar";
+import FullPage from "./Components/Navigation/FullPage";
 
 function App() {
+  const [showFullPage, setShowFullPage] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {showFullPage ? (
+        // Full screen menu open
+        <FullPage setShowFullPage={setShowFullPage} />
+      ) : (
+        // Normal website
+        <>
+          <Navbar setShowFullPage={setShowFullPage} />
+
+          <Routes>
+            <Route path="/" element={<Home  setShowFullPage={setShowFullPage} />} />
+            <Route path="/agence" element={<Agence  setShowFullPage={setShowFullPage} />} />
+            <Route path="/projects" element={<Project  setShowFullPage={setShowFullPage} />} />
+          </Routes>
+        </>
+      )}
     </div>
   );
 }
