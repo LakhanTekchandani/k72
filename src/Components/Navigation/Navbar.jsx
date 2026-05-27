@@ -7,7 +7,7 @@ const Navbar = ({ setShowFullPage, logoColor = "black", className = ""  }) => {
 
   return (
     <div className="navbar ${className} flex items-start w-full justify-between   z-10 fixed top-0 left-0">
-      <div className="lg:p-3 p-4 lg:w-[20vh] md:w-[13vh] w-[11vh] ">
+      <div className="lg:p-3 p-4 sm:w-[9vh] lg:w-[12vh] xl:w-[20vh] md:w-[13vh] w-[11vh] ">
         <svg
           xmlns="http://www.w3.org/2000/svg  "
           className="w-full"
@@ -27,7 +27,7 @@ const Navbar = ({ setShowFullPage, logoColor = "black", className = ""  }) => {
   onMouseLeave={() => {
     enter.current.style.height = "0%";
   }}
-  className="cursor-pointer lg:h-[7.5vh] h-[5.5vh] md:h-[4.5vh]  relative lg:w-[16.5vw] md:w-[36vw] w-[50vw] bg-black"
+  className="cursor-pointer lg:h-[5.5vh] h-[5.5vh] md:h-[4.5vh] xl:h-[7vh] relative lg:w-[36.5vw] md:w-[36vw] xl:w-[17vw] w-[50vw] bg-black"
 >
   <div
     ref={enter}

@@ -20,7 +20,6 @@ function Agence({ setShowFullPage }) {
     "https://k72.ca/images/teamMembers/joel_480X640_3.jpg?w=480&h=640&fit=crop&s=1cadbf143b3aa916b1b414464acbb4d6",
   ];
 
-  // preload images
   useEffect(() => {
     imagearray.forEach((src) => {
       const img = new Image();
@@ -28,20 +27,32 @@ function Agence({ setShowFullPage }) {
     });
   }, []);
 
-  // pinned image
   useEffect(() => {
+    const isMobile = window.innerWidth <= 1024;
+
+    if (isMobile) {
+      let current = 0;
+      const interval = setInterval(() => {
+        current = (current + 1) % imagearray.length;
+        if (imagechange.current) {
+          imagechange.current.src = imagearray[current];
+        }
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+
     const tween = gsap.to(image.current, {
       scrollTrigger: {
         trigger: image.current,
         start: "top 23%",
-        end: "top -140%",
+        end: "top -120%",
         scrub: true,
         pin: true,
-        anticipatePin: 1,
-
         onUpdate: (ele) => {
           const index = Math.round(ele.progress * (imagearray.length - 1));
-          imagechange.current.src = imagearray[index];
+          if (imagechange.current) {
+            imagechange.current.src = imagearray[index];
+          }
         },
       },
     });
@@ -50,12 +61,10 @@ function Agence({ setShowFullPage }) {
       if (tween.scrollTrigger) {
         tween.scrollTrigger.kill();
       }
-
       tween.kill();
     };
   }, []);
 
-  // section animation
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(".section2", {
@@ -64,17 +73,12 @@ function Agence({ setShowFullPage }) {
         y: 0,
       });
 
-      gsap.set(".flow", {
-        opacity: 0,
-      });
-
-      gsap.set(".flow2", {
-        opacity: 0,
-      });
+      gsap.set(".flow", { opacity: 0 });
+      gsap.set(".flow2", { opacity: 0 });
 
       ScrollTrigger.create({
         trigger: ".section2",
-        start: "top -30%",
+        start: "top 10%",
 
         onEnter: () => {
           gsap.to(".section2", {
@@ -84,21 +88,9 @@ function Agence({ setShowFullPage }) {
             duration: 1.5,
             ease: "power2.inOut",
           });
-
-          gsap.to(".navbar", {
-            color: "white",
-            duration: 1,
-          });
-
-          gsap.to(".flow", {
-            opacity: 1,
-            delay: 1.2,
-          });
-
-          gsap.to(".flow2", {
-            opacity: 1,
-            delay: 1.2,
-          });
+          gsap.to(".navbar", { color: "white", duration: 1 });
+          gsap.to(".flow", { opacity: 1, delay: 1.2 });
+          gsap.to(".flow2", { opacity: 1, delay: 1.2 });
         },
 
         onLeaveBack: () => {
@@ -109,19 +101,9 @@ function Agence({ setShowFullPage }) {
             duration: 1.2,
             ease: "power2.inOut",
           });
-
-          gsap.to(".navbar", {
-            color: "black",
-            duration: 1,
-          });
-
-          gsap.to(".flow", {
-            opacity: 0,
-          });
-
-          gsap.to(".flow2", {
-            opacity: 0,
-          });
+          gsap.to(".navbar", { color: "black", duration: 1 });
+          gsap.to(".flow", { opacity: 0 });
+          gsap.to(".flow2", { opacity: 0 });
         },
       });
     });
@@ -131,38 +113,33 @@ function Agence({ setShowFullPage }) {
 
   return (
     <div className="overflow-hidden">
-      <Navbar
-        setShowFullPage={setShowFullPage}
-        logoColor="currentColor"
-      />
+      <Navbar setShowFullPage={setShowFullPage} logoColor="currentColor" />
 
       {/* SECTION 1 */}
-      <div className="section1 relative overflow-hidden min-h-screen">
+      <div className="section1 relative overflow-visible min-h-screen">
 
-        {/* pinned image */}
+       
+        {/*
+          Art-direction intent (768px–1150px):
+          — image should read as a small editorial accent sitting
+            lightly above the heading, not dominating the composition.
+          — on real k72 tablet: image is narrow, short, high up,
+            centred, with generous space before the heading begins.
+          sm  (≥640)  : narrow portrait, sits high, clear air below
+          md  (≥768)  : slightly narrower than sm, shorter, pushed
+                        further up so heading has room to breathe
+          lg  (≥1024) : hands off — desktop cinematic behaviour
+        */}
         <div
           ref={image}
-          className="absolute top-[25vh] left-[30.5%] h-[50vh] w-[15%] overflow-hidden
-
-          max-[1200px]:w-[18%]
-          max-[1200px]:left-[36%]
-
-          max-[950px]:w-[22%]
-          max-[950px]:left-1/2
-          max-[950px]:-translate-x-1/2
-          max-[950px]:top-[18vh]
-          max-[950px]:h-[42vh]
-
-          max-[768px]:w-[24%]
-          max-[768px]:h-[38vh]
-          max-[768px]:top-[16vh]
-
-          max-[600px]:w-[34%]
-          max-[600px]:h-[32vh]
-          max-[600px]:top-[14vh]
-
-          max-[430px]:w-[42%]
-          max-[430px]:h-[28vh]"
+          className="
+            absolute overflow-hidden
+            top-[-10vh] left-[40%] -translate-x-1/2 w-[35%] h-[20vh]
+            sm:w-[26%] sm:h-[20vh] sm:top-[3vh]
+            md:w-[18%] md:h-[18vh] md:top-[-11vh] md:left-[30.5%]
+            lg:translate-x-0 lg:left-[28.5%] lg:top-[-19vh] lg:w-[25%] lg:h-[30vh]
+            xl:top-[-25vh] xl:w-[15%] xl:h-[50vh]
+          "
         >
           <img
             ref={imagechange}
@@ -174,32 +151,34 @@ function Agence({ setShowFullPage }) {
 
         <div className="relative">
 
-          {/* heading */}
+          {/* HEADING */}
+          {/*
+            Art-direction intent:
+            — on tablet the heading should sit lower than the image
+              with a clear, intentional gap — like k72 where the
+              oversized type starts well below the portrait.
+            sm  : drop slightly relative to mobile
+            md  : more vertical space — heading feels anchored low
+            lg+ : unchanged
+          */}
           <div
-            className="font-medium mt-[57vh]
-
-            max-[1200px]:mt-[54vh]
-
-            max-[950px]:mt-[52vh]
-
-            max-[768px]:mt-[48vh]
-
-            max-[600px]:mt-[42vh]
-
-            max-[430px]:mt-[38vh]"
+            className="
+              font-medium
+              mt-[32vh]
+              sm:mt-[28vh]
+              md:mt-[26vh]
+              lg:mt-[52vh]
+              xl:mt-[57vh]
+            "
           >
             <h1
-              className="text-[20vw] leading-[0.9] text-center text-black uppercase
-
-              max-[1200px]:text-[20vw]
-
-              max-[950px]:text-[18vw]
-
-              max-[768px]:text-[19vw]
-
-              max-[600px]:text-[21vw]
-
-              max-[430px]:text-[23vw]"
+              className="
+                leading-[0.9] text-center text-black uppercase
+                text-[23vw]
+                sm:text-[21vw]
+                md:text-[19vw]
+                lg:text-[20vw]
+              "
             >
               Soixan7e
               <br />
@@ -207,96 +186,83 @@ function Agence({ setShowFullPage }) {
             </h1>
           </div>
 
-          {/* paragraph */}
+          
           <div
-            className="font-medium px-7
-
-            max-[768px]:px-6
-
-            max-[430px]:px-4"
+            className="
+              font-medium
+              px-4
+              sm:px-6
+              lg:px-7
+            "
           >
             <p
-              className="ml-[40%] text-[3.48vw] leading-[1]
-
-              max-[1200px]:ml-[38%]
-              max-[1200px]:text-[3.8vw]
-
-              max-[950px]:ml-0
-              max-[950px]:text-center
-              max-[950px]:text-[4vw]
-              max-[950px]:mt-[8vh]
-
-              max-[768px]:text-[4.5vw]
-              max-[768px]:mt-[6vh]
-
-              max-[600px]:text-[5vw]
-
-              max-[430px]:text-[5.8vw]"
+              className="
+                leading-[1]
+                text-[5.8vw]
+                sm:text-[5vw]
+                mt-16
+                md:text-[4.2vw] md:mt-[2vh]
+                lg:ml-[38%] lg:text-[3.8vw] lg:mt-20
+                xl:ml-[40%] xl:text-[3.48vw]
+              "
             >
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               Notre curiosité nourrit notre créativité. On reste humbles et on
-              dit non aux gros egos, même le vôtre. Une marque est vivante.
-              Elle a des valeurs, une personnalité, une histoire. Si on oublie
-              ça, on peut faire de bons chiffres à court terme, mais on la tue
-              à long terme. C’est pour ça qu’on s’engage à donner de la
-              perspective, pour bâtir des marques influentes.
+              dit non aux gros egos, même le vôtre. Une marque est vivante. Elle
+              a des valeurs, une personnalité, une histoire. Si on oublie ça, on
+              peut faire de bons chiffres à court terme, mais on la tue à long
+              terme. C'est pour ça qu'on s'engage à donner de la perspective,
+              pour bâtir des marques influentes.
             </p>
           </div>
-
         </div>
       </div>
 
-      {/* SECTION 2 */}
+      
       <div
-        className="section2 relative flex flex-col mt-[30vh] px-[10vw] gap-10 font-medium overflow-hidden
-
-        max-[1200px]:mt-[24vh]
-
-        max-[950px]:mt-[18vh]
-        max-[950px]:px-[7vw]
-
-        max-[600px]:mt-[12vh]
-        max-[600px]:px-5
-
-        max-[430px]:px-4"
+        className="
+          section2 relative flex flex-col font-medium overflow-hidden
+          mt-2 pt-[8vh] px-4 gap-10
+          sm:mt-2 sm:px-5
+          md:mt-0 md:pt-[8vh] md:px-[7vw]
+          lg:mt-[-6rem] lg:pt-[10vh] lg:px-[10vw]
+          xl:mt-[6rem]
+        "
       >
 
-        {/* expertise */}
+        {/* EXPERTISE ROW */}
         <div
-          className="flex flex-row gap-[20vw]
-
-          max-[1200px]:gap-[14vw]
-
-          max-[950px]:justify-between
-          max-[950px]:gap-0"
+          className="
+            flex flex-row
+            gap-[20vw]
+            md:gap-[22vw]
+            lg:gap-[14vw]
+            xl:gap-[20vw]
+          "
         >
-
           <div>
             <p
-              className="text-[1.5vw]
-
-              max-[1200px]:text-[2vw]
-
-              max-[950px]:text-[2.7vw]
-
-              max-[600px]:text-[4vw]
-
-              max-[430px]:text-[4.5vw]"
+              className="
+                text-[4.5vw]
+                sm:text-[4vw]
+                md:text-[2.7vw]
+                lg:text-[2vw]
+                xl:text-[1.5vw]
+              "
             >
               Expertise
             </p>
           </div>
 
           <div
-            className="text-[1.5vw] leading-[1.2]
-
-            max-[1200px]:text-[2vw]
-
-            max-[950px]:text-[2.7vw]
-
-            max-[600px]:text-[4vw]
-
-            max-[430px]:text-[4.5vw]"
+            className="
+              leading-[1.2]
+              text-[4.5vw]
+              sm:text-[4vw]
+              md:text-[2.7vw]
+              lg:text-[2vw]
+              xl:text-[1.5vw]
+            "
           >
             <p>Stratégie</p>
             <p>Publicité</p>
@@ -304,94 +270,83 @@ function Agence({ setShowFullPage }) {
             <p>Design</p>
             <p>Contenu</p>
           </div>
-
         </div>
 
-        {/* paragraphs */}
+        {/* THREE PARAGRAPH COLUMNS */}
         <div
-          className="flex flex-row justify-between gap-[3.5vw]
-
-          max-[950px]:gap-[4vw]
-
-          max-[600px]:flex-col
-          max-[600px]:gap-6"
+          className="
+            flex flex-col gap-6
+            sm:flex-row sm:justify-between sm:gap-[3.5vw]
+            md:gap-[4vw]
+          "
         >
-
           <p
-            className="w-full text-[1.2vw] leading-[1.2]
-
-            max-[1200px]:text-[1.7vw]
-
-            max-[950px]:text-[2.1vw]
-
-            max-[600px]:text-[3.5vw]
-
-            max-[430px]:text-[4vw]"
+            className="
+              w-full leading-[1.2]
+              text-[4vw]
+              sm:text-[3.5vw]
+              md:text-[2.1vw]
+              lg:text-[1.7vw]
+              xl:text-[1.2vw]
+            "
           >
-            Nos projets_ naissent dans l’humilité, grandissent dans la curiosité
+            Nos projets_ naissent dans l'humilité, grandissent dans la curiosité
             et vivent grâce à la créativité sous toutes ses formes.
           </p>
 
           <p
-            className="w-full text-[1.2vw] leading-[1.2]
-
-            max-[1200px]:text-[1.7vw]
-
-            max-[950px]:text-[2.1vw]
-
-            max-[600px]:text-[3.5vw]
-
-            max-[430px]:text-[4vw]"
+            className="
+              w-full leading-[1.2]
+              text-[4vw]
+              sm:text-[3.5vw]
+              md:text-[2.1vw]
+              lg:text-[1.7vw]
+              xl:text-[1.2vw]
+            "
           >
             Notre création_ bouillonne dans un environnement où le talent a le
-            goût d’exploser. Où on se sent libre d’être la meilleure version de
+            goût d'exploser. Où on se sent libre d'être la meilleure version de
             soi-même.
           </p>
 
           <p
-            className="w-full text-[1.2vw] leading-[1.2]
-
-            max-[1200px]:text-[1.7vw]
-
-            max-[950px]:text-[2.1vw]
-
-            max-[600px]:text-[3.5vw]
-
-            max-[430px]:text-[4vw]"
+            className="
+              w-full leading-[1.2]
+              text-[4vw]
+              sm:text-[3.5vw]
+              md:text-[2.1vw]
+              lg:text-[1.7vw]
+              xl:text-[1.2vw]
+            "
           >
-            Notre culture_ c’est l’ouverture aux autres. Point. Tout l’équipage
+            Notre culture_ c'est l'ouverture aux autres. Point. Tout l'équipage
             participe à bâtir une agence dont on est fiers.
           </p>
-
         </div>
 
+        {/* CENTER IMAGE + FLOW BANDS */}
         <div>
 
-          {/* center image */}
+          {/* CENTER PORTRAIT */}
           <div
-            className="mt-96 relative w-full flex items-center justify-center h-screen
-
-            max-[1200px]:mt-72
-
-            max-[950px]:mt-56
-
-            max-[600px]:mt-40"
+            className="
+              relative w-full flex items-center justify-center
+              mt-16 h-[60vh]
+              sm:mt-20 sm:h-[65vh]
+              md:mt-10 md:h-[62vh]
+              lg:mt-40 lg:h-screen
+              xl:mt-96
+            "
           >
-
             <div
-              className="w-[32vw] rounded-3xl h-[100vh] z-10 overflow-hidden
-
-              max-[1200px]:w-[40vw]
-              max-[1200px]:h-[85vh]
-
-              max-[950px]:w-[50vw]
-              max-[950px]:h-[72vh]
-
-              max-[600px]:w-[68vw]
-              max-[600px]:h-[55vh]
-
-              max-[430px]:w-[78vw]
-              max-[430px]:h-[50vh]"
+              className="
+                z-10 overflow-hidden rounded-3xl
+                w-[78vw] h-[52vh]
+                sm:w-[60vw] sm:h-[55vh]
+                md:w-[44vw] md:h-[56vh]
+                lg:w-[60vw] lg:h-[65vh]
+                xl:w-[32vw] xl:h-[100vh]
+              "
             >
               <img
                 className="w-full h-full object-cover"
@@ -399,261 +354,119 @@ function Agence({ setShowFullPage }) {
                 alt=""
               />
             </div>
-
           </div>
 
-          {/* flow 1 */}
+          {/* FLOW BAND 1 — SÉBASTIEN */}
+          {/*
+            Art-direction: band should sit behind the portrait,
+            roughly vertically centred on it. On tablet the portrait
+            is inside section2 so top is relative to section2 origin.
+            md:top-[60vh] places it at ~60% of viewport below section2 top,
+            which lands behind the centre portrait naturally.
+          */}
           <div
-            className="absolute top-[120vh] left-0 w-full overflow-hidden z-[-1]
+              className="
+                absolute left-0 w-full overflow-hidden z-[-1]
+               top-[55%]
 
-            max-[950px]:top-[105vh]
+min-[500px]:top-[68%]
 
-            max-[600px]:top-[90vh]"
+sm:top-[58%]
+
+md:top-[55%]
+
+lg:top-[85vh]
+xl:top-[115vh]
+              "
           >
-
             <div className="flex flow">
-
-              <div
-                className="flex gap-72 ml-72 shrink-0 whitespace-nowrap
-
-                max-[950px]:gap-40
-                max-[950px]:ml-40
-
-                max-[600px]:gap-20
-                max-[600px]:ml-20"
-              >
-
-                <div>
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    SÉBASTIEN
-                  </p>
+              {[0, 1].map((set) => (
+                <div
+                  key={set}
+                  className="
+                    flex shrink-0 whitespace-nowrap
+                    gap-16 ml-16
+                    md:gap-28 md:ml-28
+                    lg:gap-72 lg:ml-72
+                  "
+                >
+                  {[0, 1].map((item) => (
+                    <div key={item}>
+                      <p
+                        className="
+                          text-[#D3FD50]
+                          text-3xl
+                          sm:text-4xl
+                          md:text-5xl
+                          lg:text-8xl
+                          xl:text-9xl
+                        "
+                      >
+                        SÉBASTIEN
+                      </p>
+                    </div>
+                  ))}
                 </div>
-
-                <div>
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    SÉBASTIEN
-                  </p>
-                </div>
-
-              </div>
-
-              <div
-                className="flex gap-72 ml-72 shrink-0 whitespace-nowrap
-
-                max-[950px]:gap-40
-                max-[950px]:ml-40
-
-                max-[600px]:gap-20
-                max-[600px]:ml-20"
-              >
-
-                <div>
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    SÉBASTIEN
-                  </p>
-                </div>
-
-                <div>
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    SÉBASTIEN
-                  </p>
-                </div>
-
-              </div>
-
+              ))}
             </div>
-
           </div>
 
-          {/* flow 2 */}
+          {/* FLOW BAND 2 — ROY */}
+          {/*
+            Art-direction: second band sits ~30–35vh below first,
+            also behind / just below the portrait's lower half.
+          */}
           <div
-            className="absolute top-[155vh] right-0 w-full overflow-hidden z-20
-
-            max-[950px]:top-[138vh]
-
-            max-[600px]:top-[118vh]"
+            className="
+              absolute right-0 w-full overflow-hidden z-20
+              top-[88vh]
+              md:top-[82vh]
+              lg:top-[105vh]
+              xl:top-[145vh]
+            "
           >
-
             <div className="flex flow2">
-
-              <div
-                className="flex gap-72 ml-72 shrink-0 whitespace-nowrap
-
-                max-[950px]:gap-40
-                max-[950px]:ml-40
-
-                max-[600px]:gap-20
-                max-[600px]:ml-20"
-              >
-
-                <div className="flex items-start">
-
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    ROY
-                  </p>
-
-                  <p
-                    className="text-4xl mt-16
-
-                    max-[1200px]:text-3xl
-
-                    max-[950px]:text-xl
-                    max-[950px]:mt-8
-
-                    max-[600px]:text-sm
-                    max-[600px]:mt-4"
-                  >
-                    Directeur de création adjoint
-                  </p>
-
+              {[0, 1].map((set) => (
+                <div
+                  key={set}
+                  className="
+                    flex shrink-0 whitespace-nowrap
+                    gap-16 ml-16
+                    md:gap-28 md:ml-28
+                    lg:gap-72 lg:ml-72
+                  "
+                >
+                  {[0, 1].map((item) => (
+                    <div key={item} className="flex items-start">
+                      <p
+                        className="
+                          text-[#D3FD50]
+                          text-3xl
+                          sm:text-4xl
+                          md:text-5xl
+                          lg:text-8xl
+                          xl:text-9xl
+                        "
+                      >
+                        ROY
+                      </p>
+                      <p
+                        className="
+                          mt-3 ml-1
+                          text-xs
+                          sm:text-sm sm:mt-4
+                          md:text-base md:mt-5
+                          lg:text-3xl lg:mt-16
+                          xl:text-4xl
+                        "
+                      >
+                        Directeur de création adjoint
+                      </p>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="flex items-start">
-
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    ROY
-                  </p>
-
-                  <p
-                    className="text-4xl mt-16
-
-                    max-[1200px]:text-3xl
-
-                    max-[950px]:text-xl
-                    max-[950px]:mt-8
-
-                    max-[600px]:text-sm
-                    max-[600px]:mt-4"
-                  >
-                    Directeur de création adjoint
-                  </p>
-
-                </div>
-
-              </div>
-
-              <div
-                className="flex gap-72 ml-72 shrink-0 whitespace-nowrap
-
-                max-[950px]:gap-40
-                max-[950px]:ml-40
-
-                max-[600px]:gap-20
-                max-[600px]:ml-20"
-              >
-
-                <div className="flex items-start">
-
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    ROY
-                  </p>
-
-                  <p
-                    className="text-4xl mt-16
-
-                    max-[1200px]:text-3xl
-
-                    max-[950px]:text-xl
-                    max-[950px]:mt-8
-
-                    max-[600px]:text-sm
-                    max-[600px]:mt-4"
-                  >
-                    Directeur de création adjoint
-                  </p>
-
-                </div>
-
-                <div className="flex items-start">
-
-                  <p
-                    className="text-9xl text-[#D3FD50]
-
-                    max-[1200px]:text-8xl
-
-                    max-[950px]:text-6xl
-
-                    max-[600px]:text-4xl"
-                  >
-                    ROY
-                  </p>
-
-                  <p
-                    className="text-4xl mt-16
-
-                    max-[1200px]:text-3xl
-
-                    max-[950px]:text-xl
-                    max-[950px]:mt-8
-
-                    max-[600px]:text-sm
-                    max-[600px]:mt-4"
-                  >
-                    Directeur de création adjoint
-                  </p>
-
-                </div>
-
-              </div>
-
+              ))}
             </div>
-
           </div>
 
         </div>
