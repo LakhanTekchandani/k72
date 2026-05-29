@@ -31,7 +31,7 @@ function Home({ setShowFullPage }) {
         <Video />
       </div>
 
-      <div  className="relative flex flex-col justify-between h-full px-4 sm:px-6 md:px-8 pt-[16vh] sm:pt-[14vh] md:pt-[12vh] lg:pt-[2vh] pb-6">
+      <div  className="relative flex flex-col justify-evenly h-full px-4 sm:px-6 md:px-8 pt-[30vh] sm:pt-[14vh] md:pt-[12vh] lg:pt-[2vh] pb-6">
         
         <div className="lg:mt-[4vh]">
           <div className="line text-center text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[8.5vw] leading-[0.8] uppercase font-light text-white">
@@ -68,8 +68,8 @@ function Home({ setShowFullPage }) {
             projects
           </Link>
 
-          <Link to="/agence" className=" text-white lg:py-0.5 py-[0.5vh] md:py-[0.4vh] lg:px-4 px md:px- uppercase border-2 hover:border-[#D3FD50 font-mediu lg:text-8xl text-xl sm:text-3xl
-            md:text-5xl rounded-full hover:text-[#D3FD50] transition-colors">
+          <Link to="/agence"  className=" text-white lg:py-0.5 py-[0.5vh] md:py-[0.4vh] lg:px-4 px-3 md:px-3 uppercase border-2 hover:border-[#D3FD50] font-medium lg:text-8xl text-xl
+            sm:text-3xl md:text-5xl rounded-full hover:text-[#D3FD50] transition-colors">
             agence
           </Link>
         </div>
