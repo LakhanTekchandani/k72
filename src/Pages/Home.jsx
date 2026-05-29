@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import Navbar from "../Components/Navigation/Navbar";
 
+
 function Home({ setShowFullPage }) {
   useEffect(() => {
     const animation = gsap.context(() => {
@@ -73,6 +74,7 @@ function Home({ setShowFullPage }) {
           </Link>
         </div>
       </div>
+     
     </div>
   );
 }

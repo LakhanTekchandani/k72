@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import Navbar from "../Components/Navigation/Navbar";
+import Footer from "../Components/Footer/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,21 +116,8 @@ function Agence({ setShowFullPage }) {
     <div className="overflow-hidden">
       <Navbar setShowFullPage={setShowFullPage} logoColor="currentColor" />
 
-      {/* SECTION 1 */}
       <div className="section1 relative overflow-visible min-h-screen">
-
-       
-        {/*
-          Art-direction intent (768px–1150px):
-          — image should read as a small editorial accent sitting
-            lightly above the heading, not dominating the composition.
-          — on real k72 tablet: image is narrow, short, high up,
-            centred, with generous space before the heading begins.
-          sm  (≥640)  : narrow portrait, sits high, clear air below
-          md  (≥768)  : slightly narrower than sm, shorter, pushed
-                        further up so heading has room to breathe
-          lg  (≥1024) : hands off — desktop cinematic behaviour
-        */}
+              
         <div
           ref={image}
           className="
@@ -151,16 +139,6 @@ function Agence({ setShowFullPage }) {
 
         <div className="relative">
 
-          {/* HEADING */}
-          {/*
-            Art-direction intent:
-            — on tablet the heading should sit lower than the image
-              with a clear, intentional gap — like k72 where the
-              oversized type starts well below the portrait.
-            sm  : drop slightly relative to mobile
-            md  : more vertical space — heading feels anchored low
-            lg+ : unchanged
-          */}
           <div
             className="
               font-medium
@@ -217,8 +195,6 @@ function Agence({ setShowFullPage }) {
           </div>
         </div>
       </div>
-
-      
       <div
         className="
           section2 relative flex flex-col font-medium overflow-hidden
@@ -471,6 +447,7 @@ xl:top-[115vh]
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

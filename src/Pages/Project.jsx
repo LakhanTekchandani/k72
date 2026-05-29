@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from "react";
 import Navbar from "../Components/Navigation/Navbar";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
+import Footer from "../Components/Footer/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -116,8 +117,7 @@ function Project({ setShowFullPage }) {
           </div>
         ))}
       </div>
-
-      
+      <Footer />
     </div>
   );
 }
